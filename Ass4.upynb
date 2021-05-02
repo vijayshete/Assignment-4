@@ -1,0 +1,416 @@
+In [1]:
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+In [2]:
+df = pd.read_csv("apy.csv")
+In [3]:
+df.head()
+Out[3]:
+State_Name	District_Name	Crop_Year	Season	Crop	Area	Production
+0	Andaman and Nicobar Islands	NICOBARS	2000	Kharif	Arecanut	1254.0	2000.0
+1	Andaman and Nicobar Islands	NICOBARS	2000	Kharif	Other Kharif pulses	2.0	1.0
+2	Andaman and Nicobar Islands	NICOBARS	2000	Kharif	Rice	102.0	321.0
+3	Andaman and Nicobar Islands	NICOBARS	2000	Whole Year	Banana	176.0	641.0
+4	Andaman and Nicobar Islands	NICOBARS	2000	Whole Year	Cashewnut	720.0	165.0
+In [4]:
+df.describe()
+Out[4]:
+Crop_Year	Area	Production
+count	246091.000000	2.460910e+05	2.423610e+05
+mean	2005.643018	1.200282e+04	5.825034e+05
+std	4.952164	5.052340e+04	1.706581e+07
+min	1997.000000	4.000000e-02	0.000000e+00
+25%	2002.000000	8.000000e+01	8.800000e+01
+50%	2006.000000	5.820000e+02	7.290000e+02
+75%	2010.000000	4.392000e+03	7.023000e+03
+max	2015.000000	8.580100e+06	1.250800e+09
+In [5]:
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 246091 entries, 0 to 246090
+Data columns (total 7 columns):
+ #   Column         Non-Null Count   Dtype  
+---  ------         --------------   -----  
+ 0   State_Name     246091 non-null  object 
+ 1   District_Name  246091 non-null  object 
+ 2   Crop_Year      246091 non-null  int64  
+ 3   Season         246091 non-null  object 
+ 4   Crop           246091 non-null  object 
+ 5   Area           246091 non-null  float64
+ 6   Production     242361 non-null  float64
+dtypes: float64(2), int64(1), object(4)
+memory usage: 13.1+ MB
+In [6]:
+df.corr()
+Out[6]:
+Crop_Year	Area	Production
+Crop_Year	1.000000	-0.026022	0.006989
+Area	-0.026022	1.000000	0.040587
+Production	0.006989	0.040587	1.000000
+In [7]:
+df['Production'].max()
+Out[7]:
+1250800000.0
+In [8]:
+df['Area'].max()
+Out[8]:
+8580100.0
+In [9]:
+df['Production'].min()
+Out[9]:
+0.0
+In [10]:
+df['Area'].min()
+Out[10]:
+0.04
+In [11]:
+print(df.State_Name.unique())
+print('\n')
+print("Totat states : ",len(df.State_Name.unique()))
+['Andaman and Nicobar Islands' 'Andhra Pradesh' 'Arunachal Pradesh'
+ 'Assam' 'Bihar' 'Chandigarh' 'Chhattisgarh' 'Dadra and Nagar Haveli'
+ 'Goa' 'Gujarat' 'Haryana' 'Himachal Pradesh' 'Jammu and Kashmir '
+ 'Jharkhand' 'Karnataka' 'Kerala' 'Madhya Pradesh' 'Maharashtra' 'Manipur'
+ 'Meghalaya' 'Mizoram' 'Nagaland' 'Odisha' 'Puducherry' 'Punjab'
+ 'Rajasthan' 'Sikkim' 'Tamil Nadu' 'Telangana ' 'Tripura' 'Uttar Pradesh'
+ 'Uttarakhand' 'West Bengal']
+
+
+Totat states :  33
+In [12]:
+print(df.District_Name.unique())
+print('\n')
+
+print("Total District :",len(df.District_Name.unique()))
+['NICOBARS' 'NORTH AND MIDDLE ANDAMAN' 'SOUTH ANDAMANS' 'ANANTAPUR'
+ 'CHITTOOR' 'EAST GODAVARI' 'GUNTUR' 'KADAPA' 'KRISHNA' 'KURNOOL'
+ 'PRAKASAM' 'SPSR NELLORE' 'SRIKAKULAM' 'VISAKHAPATANAM' 'VIZIANAGARAM'
+ 'WEST GODAVARI' 'ANJAW' 'CHANGLANG' 'DIBANG VALLEY' 'EAST KAMENG'
+ 'EAST SIANG' 'KURUNG KUMEY' 'LOHIT' 'LONGDING' 'LOWER DIBANG VALLEY'
+ 'LOWER SUBANSIRI' 'NAMSAI' 'PAPUM PARE' 'TAWANG' 'TIRAP' 'UPPER SIANG'
+ 'UPPER SUBANSIRI' 'WEST KAMENG' 'WEST SIANG' 'BAKSA' 'BARPETA'
+ 'BONGAIGAON' 'CACHAR' 'CHIRANG' 'DARRANG' 'DHEMAJI' 'DHUBRI' 'DIBRUGARH'
+ 'DIMA HASAO' 'GOALPARA' 'GOLAGHAT' 'HAILAKANDI' 'JORHAT' 'KAMRUP'
+ 'KAMRUP METRO' 'KARBI ANGLONG' 'KARIMGANJ' 'KOKRAJHAR' 'LAKHIMPUR'
+ 'MARIGAON' 'NAGAON' 'NALBARI' 'SIVASAGAR' 'SONITPUR' 'TINSUKIA'
+ 'UDALGURI' 'ARARIA' 'ARWAL' 'AURANGABAD' 'BANKA' 'BEGUSARAI' 'BHAGALPUR'
+ 'BHOJPUR' 'BUXAR' 'DARBHANGA' 'GAYA' 'GOPALGANJ' 'JAMUI' 'JEHANABAD'
+ 'KAIMUR (BHABUA)' 'KATIHAR' 'KHAGARIA' 'KISHANGANJ' 'LAKHISARAI'
+ 'MADHEPURA' 'MADHUBANI' 'MUNGER' 'MUZAFFARPUR' 'NALANDA' 'NAWADA'
+ 'PASHCHIM CHAMPARAN' 'PATNA' 'PURBI CHAMPARAN' 'PURNIA' 'ROHTAS'
+ 'SAHARSA' 'SAMASTIPUR' 'SARAN' 'SHEIKHPURA' 'SHEOHAR' 'SITAMARHI' 'SIWAN'
+ 'SUPAUL' 'VAISHALI' 'CHANDIGARH' 'BALOD' 'BALODA BAZAR' 'BALRAMPUR'
+ 'BASTAR' 'BEMETARA' 'BIJAPUR' 'BILASPUR' 'DANTEWADA' 'DHAMTARI' 'DURG'
+ 'GARIYABAND' 'JANJGIR-CHAMPA' 'JASHPUR' 'KABIRDHAM' 'KANKER' 'KONDAGAON'
+ 'KORBA' 'KOREA' 'MAHASAMUND' 'MUNGELI' 'NARAYANPUR' 'RAIGARH' 'RAIPUR'
+ 'RAJNANDGAON' 'SUKMA' 'SURAJPUR' 'SURGUJA' 'DADRA AND NAGAR HAVELI'
+ 'NORTH GOA' 'SOUTH GOA' 'AHMADABAD' 'AMRELI' 'ANAND' 'BANAS KANTHA'
+ 'BHARUCH' 'BHAVNAGAR' 'DANG' 'DOHAD' 'GANDHINAGAR' 'JAMNAGAR' 'JUNAGADH'
+ 'KACHCHH' 'KHEDA' 'MAHESANA' 'NARMADA' 'NAVSARI' 'PANCH MAHALS' 'PATAN'
+ 'PORBANDAR' 'RAJKOT' 'SABAR KANTHA' 'SURAT' 'SURENDRANAGAR' 'TAPI'
+ 'VADODARA' 'VALSAD' 'AMBALA' 'BHIWANI' 'FARIDABAD' 'FATEHABAD' 'GURGAON'
+ 'HISAR' 'JHAJJAR' 'JIND' 'KAITHAL' 'KARNAL' 'KURUKSHETRA' 'MAHENDRAGARH'
+ 'MEWAT' 'PALWAL' 'PANCHKULA' 'PANIPAT' 'REWARI' 'ROHTAK' 'SIRSA'
+ 'SONIPAT' 'YAMUNANAGAR' 'CHAMBA' 'HAMIRPUR' 'KANGRA' 'KINNAUR' 'KULLU'
+ 'LAHUL AND SPITI' 'MANDI' 'SHIMLA' 'SIRMAUR' 'SOLAN' 'UNA' 'ANANTNAG'
+ 'BADGAM' 'BANDIPORA' 'BARAMULLA' 'DODA' 'GANDERBAL' 'JAMMU' 'KARGIL'
+ 'KATHUA' 'KISHTWAR' 'KULGAM' 'KUPWARA' 'LEH LADAKH' 'POONCH' 'PULWAMA'
+ 'RAJAURI' 'RAMBAN' 'REASI' 'SAMBA' 'SHOPIAN' 'SRINAGAR' 'UDHAMPUR'
+ 'BOKARO' 'CHATRA' 'DEOGHAR' 'DHANBAD' 'DUMKA' 'EAST SINGHBUM' 'GARHWA'
+ 'GIRIDIH' 'GODDA' 'GUMLA' 'HAZARIBAGH' 'JAMTARA' 'KHUNTI' 'KODERMA'
+ 'LATEHAR' 'LOHARDAGA' 'PAKUR' 'PALAMU' 'RAMGARH' 'RANCHI' 'SAHEBGANJ'
+ 'SARAIKELA KHARSAWAN' 'SIMDEGA' 'WEST SINGHBHUM' 'BAGALKOT'
+ 'BANGALORE RURAL' 'BELGAUM' 'BELLARY' 'BENGALURU URBAN' 'BIDAR'
+ 'CHAMARAJANAGAR' 'CHIKBALLAPUR' 'CHIKMAGALUR' 'CHITRADURGA'
+ 'DAKSHIN KANNAD' 'DAVANGERE' 'DHARWAD' 'GADAG' 'GULBARGA' 'HASSAN'
+ 'HAVERI' 'KODAGU' 'KOLAR' 'KOPPAL' 'MANDYA' 'MYSORE' 'RAICHUR'
+ 'RAMANAGARA' 'SHIMOGA' 'TUMKUR' 'UDUPI' 'UTTAR KANNAD' 'YADGIR'
+ 'ALAPPUZHA' 'ERNAKULAM' 'IDUKKI' 'KANNUR' 'KASARAGOD' 'KOLLAM' 'KOTTAYAM'
+ 'KOZHIKODE' 'MALAPPURAM' 'PALAKKAD' 'PATHANAMTHITTA' 'THIRUVANANTHAPURAM'
+ 'THRISSUR' 'WAYANAD' 'AGAR MALWA' 'ALIRAJPUR' 'ANUPPUR' 'ASHOKNAGAR'
+ 'BALAGHAT' 'BARWANI' 'BETUL' 'BHIND' 'BHOPAL' 'BURHANPUR' 'CHHATARPUR'
+ 'CHHINDWARA' 'DAMOH' 'DATIA' 'DEWAS' 'DHAR' 'DINDORI' 'GUNA' 'GWALIOR'
+ 'HARDA' 'HOSHANGABAD' 'INDORE' 'JABALPUR' 'JHABUA' 'KATNI' 'KHANDWA'
+ 'KHARGONE' 'MANDLA' 'MANDSAUR' 'MORENA' 'NARSINGHPUR' 'NEEMUCH' 'PANNA'
+ 'RAISEN' 'RAJGARH' 'RATLAM' 'REWA' 'SAGAR' 'SATNA' 'SEHORE' 'SEONI'
+ 'SHAHDOL' 'SHAJAPUR' 'SHEOPUR' 'SHIVPURI' 'SIDHI' 'SINGRAULI' 'TIKAMGARH'
+ 'UJJAIN' 'UMARIA' 'VIDISHA' 'AHMEDNAGAR' 'AKOLA' 'AMRAVATI' 'BEED'
+ 'BHANDARA' 'BULDHANA' 'CHANDRAPUR' 'DHULE' 'GADCHIROLI' 'GONDIA'
+ 'HINGOLI' 'JALGAON' 'JALNA' 'KOLHAPUR' 'LATUR' 'MUMBAI' 'NAGPUR' 'NANDED'
+ 'NANDURBAR' 'NASHIK' 'OSMANABAD' 'PALGHAR' 'PARBHANI' 'PUNE' 'RAIGAD'
+ 'RATNAGIRI' 'SANGLI' 'SATARA' 'SINDHUDURG' 'SOLAPUR' 'THANE' 'WARDHA'
+ 'WASHIM' 'YAVATMAL' 'BISHNUPUR' 'CHANDEL' 'CHURACHANDPUR' 'IMPHAL EAST'
+ 'IMPHAL WEST' 'SENAPATI' 'TAMENGLONG' 'THOUBAL' 'UKHRUL'
+ 'EAST GARO HILLS' 'EAST JAINTIA HILLS' 'EAST KHASI HILLS'
+ 'NORTH GARO HILLS' 'RI BHOI' 'SOUTH GARO HILLS' 'SOUTH WEST GARO HILLS'
+ 'SOUTH WEST KHASI HILLS' 'WEST GARO HILLS' 'WEST JAINTIA HILLS'
+ 'WEST KHASI HILLS' 'AIZAWL' 'CHAMPHAI' 'KOLASIB' 'LAWNGTLAI' 'LUNGLEI'
+ 'MAMIT' 'SAIHA' 'SERCHHIP' 'DIMAPUR' 'KIPHIRE' 'KOHIMA' 'LONGLENG'
+ 'MOKOKCHUNG' 'MON' 'PEREN' 'PHEK' 'TUENSANG' 'WOKHA' 'ZUNHEBOTO' 'ANUGUL'
+ 'BALANGIR' 'BALESHWAR' 'BARGARH' 'BHADRAK' 'BOUDH' 'CUTTACK' 'DEOGARH'
+ 'DHENKANAL' 'GAJAPATI' 'GANJAM' 'JAGATSINGHAPUR' 'JAJAPUR' 'JHARSUGUDA'
+ 'KALAHANDI' 'KANDHAMAL' 'KENDRAPARA' 'KENDUJHAR' 'KHORDHA' 'KORAPUT'
+ 'MALKANGIRI' 'MAYURBHANJ' 'NABARANGPUR' 'NAYAGARH' 'NUAPADA' 'PURI'
+ 'RAYAGADA' 'SAMBALPUR' 'SONEPUR' 'SUNDARGARH' 'KARAIKAL' 'MAHE'
+ 'PONDICHERRY' 'YANAM' 'AMRITSAR' 'BARNALA' 'BATHINDA' 'FARIDKOT'
+ 'FATEHGARH SAHIB' 'FAZILKA' 'FIROZEPUR' 'GURDASPUR' 'HOSHIARPUR'
+ 'JALANDHAR' 'KAPURTHALA' 'LUDHIANA' 'MANSA' 'MOGA' 'MUKTSAR' 'NAWANSHAHR'
+ 'PATHANKOT' 'PATIALA' 'RUPNAGAR' 'S.A.S NAGAR' 'SANGRUR' 'TARN TARAN'
+ 'AJMER' 'ALWAR' 'BANSWARA' 'BARAN' 'BARMER' 'BHARATPUR' 'BHILWARA'
+ 'BIKANER' 'BUNDI' 'CHITTORGARH' 'CHURU' 'DAUSA' 'DHOLPUR' 'DUNGARPUR'
+ 'GANGANAGAR' 'HANUMANGARH' 'JAIPUR' 'JAISALMER' 'JALORE' 'JHALAWAR'
+ 'JHUNJHUNU' 'JODHPUR' 'KARAULI' 'KOTA' 'NAGAUR' 'PALI' 'PRATAPGARH'
+ 'RAJSAMAND' 'SAWAI MADHOPUR' 'SIKAR' 'SIROHI' 'TONK' 'UDAIPUR'
+ 'EAST DISTRICT' 'NORTH DISTRICT' 'SOUTH DISTRICT' 'WEST DISTRICT'
+ 'ARIYALUR' 'COIMBATORE' 'CUDDALORE' 'DHARMAPURI' 'DINDIGUL' 'ERODE'
+ 'KANCHIPURAM' 'KANNIYAKUMARI' 'KARUR' 'KRISHNAGIRI' 'MADURAI'
+ 'NAGAPATTINAM' 'NAMAKKAL' 'PERAMBALUR' 'PUDUKKOTTAI' 'RAMANATHAPURAM'
+ 'SALEM' 'SIVAGANGA' 'THANJAVUR' 'THE NILGIRIS' 'THENI' 'THIRUVALLUR'
+ 'THIRUVARUR' 'TIRUCHIRAPPALLI' 'TIRUNELVELI' 'TIRUPPUR' 'TIRUVANNAMALAI'
+ 'TUTICORIN' 'VELLORE' 'VILLUPURAM' 'VIRUDHUNAGAR' 'ADILABAD' 'HYDERABAD'
+ 'KARIMNAGAR' 'KHAMMAM' 'MAHBUBNAGAR' 'MEDAK' 'NALGONDA' 'NIZAMABAD'
+ 'RANGAREDDI' 'WARANGAL' 'DHALAI' 'GOMATI' 'KHOWAI' 'NORTH TRIPURA'
+ 'SEPAHIJALA' 'SOUTH TRIPURA' 'UNAKOTI' 'WEST TRIPURA' 'AGRA' 'ALIGARH'
+ 'ALLAHABAD' 'AMBEDKAR NAGAR' 'AMETHI' 'AMROHA' 'AURAIYA' 'AZAMGARH'
+ 'BAGHPAT' 'BAHRAICH' 'BALLIA' 'BANDA' 'BARABANKI' 'BAREILLY' 'BASTI'
+ 'BIJNOR' 'BUDAUN' 'BULANDSHAHR' 'CHANDAULI' 'CHITRAKOOT' 'DEORIA' 'ETAH'
+ 'ETAWAH' 'FAIZABAD' 'FARRUKHABAD' 'FATEHPUR' 'FIROZABAD'
+ 'GAUTAM BUDDHA NAGAR' 'GHAZIABAD' 'GHAZIPUR' 'GONDA' 'GORAKHPUR' 'HAPUR'
+ 'HARDOI' 'HATHRAS' 'JALAUN' 'JAUNPUR' 'JHANSI' 'KANNAUJ' 'KANPUR DEHAT'
+ 'KANPUR NAGAR' 'KASGANJ' 'KAUSHAMBI' 'KHERI' 'KUSHI NAGAR' 'LALITPUR'
+ 'LUCKNOW' 'MAHARAJGANJ' 'MAHOBA' 'MAINPURI' 'MATHURA' 'MAU' 'MEERUT'
+ 'MIRZAPUR' 'MORADABAD' 'MUZAFFARNAGAR' 'PILIBHIT' 'RAE BARELI' 'RAMPUR'
+ 'SAHARANPUR' 'SAMBHAL' 'SANT KABEER NAGAR' 'SANT RAVIDAS NAGAR'
+ 'SHAHJAHANPUR' 'SHAMLI' 'SHRAVASTI' 'SIDDHARTH NAGAR' 'SITAPUR'
+ 'SONBHADRA' 'SULTANPUR' 'UNNAO' 'VARANASI' 'ALMORA' 'BAGESHWAR' 'CHAMOLI'
+ 'CHAMPAWAT' 'DEHRADUN' 'HARIDWAR' 'NAINITAL' 'PAURI GARHWAL'
+ 'PITHORAGARH' 'RUDRA PRAYAG' 'TEHRI GARHWAL' 'UDAM SINGH NAGAR'
+ 'UTTAR KASHI' '24 PARAGANAS NORTH' '24 PARAGANAS SOUTH' 'BANKURA'
+ 'BARDHAMAN' 'BIRBHUM' 'COOCHBEHAR' 'DARJEELING' 'DINAJPUR DAKSHIN'
+ 'DINAJPUR UTTAR' 'HOOGHLY' 'HOWRAH' 'JALPAIGURI' 'MALDAH'
+ 'MEDINIPUR EAST' 'MEDINIPUR WEST' 'MURSHIDABAD' 'NADIA' 'PURULIA']
+
+
+Total District : 646
+In [13]:
+print(df['Crop'].unique())
+print('\n')
+print("Total Crops :",len(df['Crop'].unique()))
+['Arecanut' 'Other Kharif pulses' 'Rice' 'Banana' 'Cashewnut' 'Coconut '
+ 'Dry ginger' 'Sugarcane' 'Sweet potato' 'Tapioca' 'Black pepper'
+ 'Dry chillies' 'other oilseeds' 'Turmeric' 'Maize' 'Moong(Green Gram)'
+ 'Urad' 'Arhar/Tur' 'Groundnut' 'Sunflower' 'Bajra' 'Castor seed'
+ 'Cotton(lint)' 'Horse-gram' 'Jowar' 'Korra' 'Ragi' 'Tobacco' 'Gram'
+ 'Wheat' 'Masoor' 'Sesamum' 'Linseed' 'Safflower' 'Onion'
+ 'other misc. pulses' 'Samai' 'Small millets' 'Coriander' 'Potato'
+ 'Other  Rabi pulses' 'Soyabean' 'Beans & Mutter(Vegetable)' 'Bhindi'
+ 'Brinjal' 'Citrus Fruit' 'Cucumber' 'Grapes' 'Mango' 'Orange'
+ 'other fibres' 'Other Fresh Fruits' 'Other Vegetables' 'Papaya'
+ 'Pome Fruit' 'Tomato' 'Rapeseed &Mustard' 'Mesta' 'Cowpea(Lobia)' 'Lemon'
+ 'Pome Granet' 'Sapota' 'Cabbage' 'Peas  (vegetable)' 'Niger seed'
+ 'Bottle Gourd' 'Sannhamp' 'Varagu' 'Garlic' 'Ginger' 'Oilseeds total'
+ 'Pulses total' 'Jute' 'Peas & beans (Pulses)' 'Blackgram' 'Paddy'
+ 'Pineapple' 'Barley' 'Khesari' 'Guar seed' 'Moth'
+ 'Other Cereals & Millets' 'Cond-spcs other' 'Turnip' 'Carrot' 'Redish'
+ 'Arcanut (Processed)' 'Atcanut (Raw)' 'Cashewnut Processed'
+ 'Cashewnut Raw' 'Cardamom' 'Rubber' 'Bitter Gourd' 'Drum Stick'
+ 'Jack Fruit' 'Snak Guard' 'Pump Kin' 'Tea' 'Coffee' 'Cauliflower'
+ 'Other Citrus Fruit' 'Water Melon' 'Total foodgrain' 'Kapas' 'Colocosia'
+ 'Lentil' 'Bean' 'Jobster' 'Perilla' 'Rajmash Kholar' 'Ricebean (nagadal)'
+ 'Ash Gourd' 'Beet Root' 'Lab-Lab' 'Ribed Guard' 'Yam' 'Apple' 'Peach'
+ 'Pear' 'Plums' 'Litchi' 'Ber' 'Other Dry Fruit' 'Jute & mesta']
+
+
+Total Crops : 124
+In [14]:
+df2 = df.groupby('State_Name').get_group('Maharashtra')
+In [15]:
+df2['Production'].max()
+Out[15]:
+20049700.0
+In [16]:
+df2['Production'].min()
+Out[16]:
+0.0
+In [17]:
+df2['Area'].max()
+Out[17]:
+726300.0
+In [18]:
+df2['Area'].min()
+Out[18]:
+1.0
+In [64]:
+df2.shape
+Out[64]:
+(12628, 7)
+In [65]:
+df2['Production'].isnull().sum()
+Out[65]:
+132
+In [66]:
+df2['District_Name'].unique()
+Out[66]:
+array(['AHMEDNAGAR', 'AKOLA', 'AMRAVATI', 'AURANGABAD', 'BEED',
+       'BHANDARA', 'BULDHANA', 'CHANDRAPUR', 'DHULE', 'GADCHIROLI',
+       'GONDIA', 'HINGOLI', 'JALGAON', 'JALNA', 'KOLHAPUR', 'LATUR',
+       'MUMBAI', 'NAGPUR', 'NANDED', 'NANDURBAR', 'NASHIK', 'OSMANABAD',
+       'PALGHAR', 'PARBHANI', 'PUNE', 'RAIGAD', 'RATNAGIRI', 'SANGLI',
+       'SATARA', 'SINDHUDURG', 'SOLAPUR', 'THANE', 'WARDHA', 'WASHIM',
+       'YAVATMAL'], dtype=object)
+In [67]:
+len(df2['District_Name'].unique())
+Out[67]:
+35
+In [68]:
+mh_data = df2.fillna(0)
+In [76]:
+mh_data.head()
+Out[76]:
+State_Name	District_Name	Crop_Year	Season	Crop	Area	Production
+125191	Maharashtra	AHMEDNAGAR	1997	Autumn	Maize	1.0	1113.0
+125192	Maharashtra	AHMEDNAGAR	1997	Kharif	Arhar/Tur	17600.0	6300.0
+125193	Maharashtra	AHMEDNAGAR	1997	Kharif	Bajra	274100.0	152800.0
+125194	Maharashtra	AHMEDNAGAR	1997	Kharif	Gram	40800.0	18600.0
+125195	Maharashtra	AHMEDNAGAR	1997	Kharif	Jowar	900.0	1100.0
+In [69]:
+mh_data.isnull().sum()
+Out[69]:
+State_Name       0
+District_Name    0
+Crop_Year        0
+Season           0
+Crop             0
+Area             0
+Production       0
+dtype: int64
+In [70]:
+df.corr()
+Out[70]:
+Crop_Year	Area	Production
+Crop_Year	1.000000	-0.026022	0.006989
+Area	-0.026022	1.000000	0.040587
+Production	0.006989	0.040587	1.000000
+In [71]:
+sns.heatmap(df2.corr())
+Out[71]:
+<AxesSubplot:>
+
+In [72]:
+print(mh_data['Crop'].unique())
+print('\n')
+print("Total crops :",len(mh_data['Crop'].unique()))
+['Maize' 'Arhar/Tur' 'Bajra' 'Gram' 'Jowar' 'Moong(Green Gram)'
+ 'Pulses total' 'Ragi' 'Rice' 'Sugarcane' 'Total foodgrain' 'Urad'
+ 'Other  Rabi pulses' 'Wheat' 'Cotton(lint)' 'Castor seed' 'Groundnut'
+ 'Niger seed' 'Other Cereals & Millets' 'Other Kharif pulses' 'Sesamum'
+ 'Soyabean' 'Sunflower' 'Linseed' 'Rapeseed &Mustard' 'Safflower'
+ 'Small millets' 'other oilseeds' 'Banana' 'Grapes' 'Mango' 'Onion'
+ 'Tomato' 'Tobacco']
+
+
+Total crops : 34
+In [73]:
+mh_sug_data = mh_data.groupby('Crop').get_group('Sugarcane')
+In [74]:
+sns.heatmap(mh_sug_data.corr())
+Out[74]:
+<AxesSubplot:>
+
+In [30]:
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+In [98]:
+x= mh_sug_data.loc[:,['Area']]
+
+y = mh_sug_data.Production
+In [99]:
+x
+Out[99]:
+Area
+125201	45900.0
+125225	59600.0
+125273	66600.0
+125303	67100.0
+125335	52000.0
+...	...
+137753	4500.0
+137774	4700.0
+137791	4200.0
+137805	6500.0
+137818	8100.0
+456 rows × 1 columns
+
+In [100]:
+x.size
+Out[100]:
+456
+In [101]:
+x.shape
+Out[101]:
+(456, 1)
+In [102]:
+X_train, X_test, y_train, y_test = train_test_split(x,y,test_size = 0.3)
+In [103]:
+X_train
+Out[103]:
+Area
+130402	18200.0
+132317	5900.0
+129994	11200.0
+126112	1900.0
+127360	700.0
+...	...
+126161	3000.0
+135064	45200.0
+136132	62500.0
+126945	32000.0
+127654	800.0
+319 rows × 1 columns
+
+In [104]:
+len(X_test)
+Out[104]:
+137
+In [105]:
+X_train.shape
+Out[105]:
+(319, 1)
+In [106]:
+y_train
+Out[106]:
+130402    1693700.0
+132317     356100.0
+129994     877000.0
+126112     185900.0
+127360      59300.0
+            ...    
+126161     204100.0
+135064    4344800.0
+136132    5480500.0
+126945    2230000.0
+127654      65100.0
+Name: Production, Length: 319, dtype: float64
+In [107]:
+model.fit(X_train,y_train)
+Out[107]:
+LinearRegression()
+In [108]:
+ypred = model.predict(X_test)
+In [117]:
+plt.scatter(X_train,y_train)
+plt.plot(X_test,ypred,color = 'orange')
+plt.xlabel("Area")
+plt.ylabel("Production")
+plt.title("Area va Production")
+Out[117]:
+Text(0.5, 1.0, 'Area va Production')
+
+In [114]:
+model.score(X_test,y_test)
+Out[114]:
+0.9519482732072995
+In [ ]:
